@@ -1,0 +1,5 @@
+[pre-commit-hook]
+limit=8.0
+
+[FORMAT]
+indent-string='  '
