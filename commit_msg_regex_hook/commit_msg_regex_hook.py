@@ -62,7 +62,6 @@ def main():
 
 def process_file(path: str) -> str:
   """Extract commit message.  
-  On failure the commit is aborted. 
 
   Args:
       path (str): The path of the file with commit message
@@ -78,15 +77,19 @@ def process_file(path: str) -> str:
   return msg
 
 
-def process_pattern(pattern_str: str) -> Pattern:
-  """Verify regex pattern and return the pattern object
+def process_pattern(str_pattern: str) -> Pattern:
+  """Convert string pattern to regex pattern object.
+
+  Args:
+      pattern_str (str): The path of the file with commit message
+  Returns:
+      pattern (Pattern): The compiled regex pattern.
   """
   try:
-    print(f"Incoming Pattern: {pattern_str}")
-    pattern = re.compile(pattern_str[1:-1])
+    pattern = re.compile(str_pattern[1:-1])
   except Exception as e:
     raise argparse.ArgumentTypeError(
-      f"'{pattern_str}' is not a valid regex pattern\n {e}"
+      f"'{str_pattern}' is not a valid regex pattern\n {e}"
     )
 
   return pattern

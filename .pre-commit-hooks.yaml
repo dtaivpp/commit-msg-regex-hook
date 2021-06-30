@@ -1,6 +1,6 @@
   
 -   id: commit-msg-regex-hook
-    name: commit-msg-regex-hook
+    name: Validate commit message with Regex
     description: Checks if commit message matches the passed in regex
     entry: commit-msg-regex-hook
     language: python

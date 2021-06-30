@@ -13,7 +13,7 @@ First you will need to setup [pre-commit](https://pre-commit.com/) using their d
   rev: v0.3.1
   hooks:
     - id: commit-msg-hook
-      args: [--pattern='[A-Z]{3,4}-[0-9]{3,6} \\| [\\w\\s]* \\| .+']
+      args: ["--pattern='[A-Z]{3,4}-[0-9]{3,6} \\| [\\w\\s]* \\| .+'"]
       stages: [commit-msg]
 ```
 
