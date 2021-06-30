@@ -9,7 +9,7 @@ import argparse
 import re
 from typing import Pattern
 
-# Defualt commit message path
+# Default commit message path
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 PASS=True
 FAIL=False
