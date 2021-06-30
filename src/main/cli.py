@@ -33,11 +33,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("message", nargs="?", type=process_file, default=COMMIT_EDITMSG,
                         help="File path for commit message")
-    parser.add_argument("pattern", type=process_pattern, required=True)
+    parser.add_argument("--pattern", type=process_pattern)
     parser.add_argument(
       '--debug',
       action='store_true', 
-      help='print debug messages to stderr'
+      help='print debug messages to stdout'
     )
 
     args = parser.parse_args()
