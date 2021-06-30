@@ -78,14 +78,15 @@ def process_file(path: str) -> str:
   return msg
 
 
-def process_pattern(pattern: str) -> Pattern:
+def process_pattern(pattern_str: str) -> Pattern:
   """Verify regex pattern and return the pattern object
   """
   try:
-    pattern = re.compile(pattern)
+    print(f"Incoming Pattern: {pattern_str}")
+    pattern = re.compile(pattern_str)
   except Exception as e:
     raise argparse.ArgumentTypeError(
-      f"'{pattern}' is not a valid regex pattern\n {e}"
+      f"'{pattern_str}' is not a valid regex pattern\n {e}"
     )
 
   return pattern
@@ -102,11 +103,11 @@ def message_not_empty(message: str) -> Result:
   return check
 
 
-def message_pattern_match(msg: str, pattern: str) -> Result:
+def message_pattern_match(msg: str, pattern: Pattern) -> Result:
   """Verify the commit message matches the pattern
   """
   def check():
-    if not re.match(pattern, msg):
+    if not pattern.match(msg):
       # Fail the commit message
       return Result(f"Commit Message does not match pattern\n\t{pattern}\n\t{msg}", FAIL)
     
