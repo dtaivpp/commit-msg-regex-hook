@@ -16,3 +16,9 @@ First you will need to setup [pre-commit](https://pre-commit.com/) using their d
       args: ["regex='[A-Z]{3,4}-[0-9]{3,6} \| [\w\s]* \| .+'"]
       stages: [commit-msg]
 ```
+
+#### To enable commit-msg hook with pre-commit run:
+`pre-commit install --hook-type commit-msg`
+
+#### Update to the latest release (optional)
+`pre-commit autoupdate --repo https://github.com/dtaivpp/commit-msg-regex-hook.git`
