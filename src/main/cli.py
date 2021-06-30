@@ -21,7 +21,7 @@ class Result():
   def __init__(self, message, result):
     self.message = message
     self.result = result
-  
+
   def is_passing(self):
     return self.result
 
