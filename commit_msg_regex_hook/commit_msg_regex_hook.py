@@ -83,7 +83,7 @@ def process_pattern(pattern_str: str) -> Pattern:
   """
   try:
     print(f"Incoming Pattern: {pattern_str}")
-    pattern = re.compile(pattern_str)
+    pattern = re.compile(pattern_str[1:-1])
   except Exception as e:
     raise argparse.ArgumentTypeError(
       f"'{pattern_str}' is not a valid regex pattern\n {e}"
