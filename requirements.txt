@@ -1,3 +1,6 @@
 setuptools
 argparse
 pylint
+pre-commit
+twine
+build
