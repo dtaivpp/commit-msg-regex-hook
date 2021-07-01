@@ -1,26 +1,49 @@
 # commit-msg-regex-hook
 
-Before the readme, big shoutout to @dimaka-wix who's repo [commit-msg-hook](https://github.com/dimaka-wix/commit-msg-hook) was the basis for this repository. Go check out his repo for more information. 
-
 This hook is designed to be used with the [pre-commit](https://pre-commit.com/) hook framework. It will check your commit string against the provided regex. 
 
-### Utilizing
 
-First you will need to setup [pre-commit](https://pre-commit.com/) using their documentation. Then you will be able to add this repository under it with the following:
+### Using the commit-msg-regex-hook
+
+First you will need to setup [pre-commit](https://pre-commit.com/) using their documentation. 
+
+Next you will need to enable commit message hooks: 
+`pre-commit install --hook-type commit-msg`
+
+Finally you can add this to your .pre-commit-config.yaml:
 
 ```
-- repo: https://github.com/dimaka-wix/commit-msg-hook.git
-  rev: v0.3.1
+- repo: https://github.com/dtaivpp/commit-msg-regex-hook
+  rev: v0.1.0
   hooks:
     - id: commit-msg-hook
       args: ["--pattern='[A-Z]{3,4}-[0-9]{3,6} \\| [\\w\\s]* \\| .+'"]
       stages: [commit-msg]
 ```
 
-**note the backslashes need to be escaped
+**note: the backslashes in regex need to be escaped need to be escaped
+**double note: if you are having issues you can run with the --debug argument as well for additional logging.  
 
-### To enable commit-msg hook with pre-commit run:
-`pre-commit install --hook-type commit-msg`
 
-### Update to the latest release (optional)
-`pre-commit autoupdate --repo https://github.com/dtaivpp/commit-msg-regex-hook.git`
+### Developing this project
+
+If you would like to contribute to this project I am happy to accept contributions. Small note I use two spaces for indents and am not looking to swap. 
+
+Here is how you can contribute: 
+
+1. Fork the repo
+2. Create a virtual envrionment `python -m venv venv`
+3. Activate the virtual environment:
+  - Windows: `venv\Scripts\activate`
+  - Mac/Linux: `source venv/bin/activate`
+4. Install the reqirements `python -m pip install -r requirements.txt`
+5. Install our hooks:
+  - `pre-commit install`
+
+And you are off to the races!
+
+Before committing I would reccomend checking your build against unittest and the linter. If it doesn't pass it wont pass! 
+- `python -m unittest test`
+- `python -m pylint commit_msg_regex_hook`
+
+Make sure if you add a check to add a test case!

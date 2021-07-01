@@ -1,5 +1,5 @@
-[pre-commit-hook]
-limit=8.0
+[MASTER]
+ignore=test
 
 [FORMAT]
 indent-string='  '

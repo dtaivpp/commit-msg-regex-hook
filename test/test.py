@@ -1,6 +1,9 @@
+"""Test suite for the project
+"""
+
 import re
 import unittest
-from src import commit_msg_regex_hook
+from commit_msg_regex_hook import commit_msg_regex_hook
 
 
 class TestMessageEmpty(unittest.TestCase):

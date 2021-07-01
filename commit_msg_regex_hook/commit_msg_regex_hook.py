@@ -7,7 +7,18 @@ the provided regex.
 import sys
 import argparse
 import re
+import logging
 from typing import Pattern
+
+
+logger = logging.getLogger("__main__")
+logger.setLevel(logging.ERROR)
+consoleHandle = logging.StreamHandler()
+consoleHandle.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+consoleHandle.setFormatter(formatter)
+logger.addHandler(consoleHandle)
+
 
 # Default commit message path
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
@@ -23,45 +34,56 @@ class Result():
     self.result = result
 
   def is_passing(self):
+    """Whether the result is a passing or failing result
+    """
     return self.result
 
 
 def main():
-    """Perform validations of the commit message.
-    Parse passed in regex and verify message matches
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("message", nargs="?", type=process_file, default=COMMIT_EDITMSG,
-                        help="File path for commit message")
-    parser.add_argument("--pattern", type=process_pattern)
-    parser.add_argument(
-      '--debug',
-      action='store_true', 
-      help='print debug messages to stdout'
-    )
+  """Perform validations of the commit message.
+  Parse passed in regex and verify message matches
+  """
+  parser = argparse.ArgumentParser()
+  parser.add_argument("message", nargs="?", type=process_file, default=COMMIT_EDITMSG,
+                      help="File path for commit message")
+  parser.add_argument("--pattern", type=process_pattern)
+  parser.add_argument(
+    '--debug',
+    action='store_true',
+    help='print debug messages to stdout'
+  )
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    checks = [
-      message_not_empty(args.message),
-      message_pattern_match(args.message, args.pattern)
-    ]
+  if args.debug:
+    logger.setLevel(logging.DEBUG)
 
-    for check in checks:
-      result = check()
-      
-      if not result.is_passing():
-        print(f"Check Failed:\n {result.message}")
-        sys.exit(1)
+  checks = [
+    message_not_empty(args.message),
+    message_pattern_match(args.message, args.pattern)
+  ]
 
-      if args.debug:
-        print(result.message)
+  run_checks(checks)
 
-    sys.exit(0)
+
+def run_checks(checks: list):
+  """Processs the checks and in the event of a failure
+  kill the commit
+  """
+  for check in checks:
+    result = check()
+
+    if not result.is_passing():
+      logger.error("Check Failed:\n {failure}", failure=result.message)
+      sys.exit(1)
+
+    logger.debug(result.message)
+
+  sys.exit(0)
 
 
 def process_file(path: str) -> str:
-  """Extract commit message.  
+  """Extract commit message.
 
   Args:
       path (str): The path of the file with commit message
@@ -71,8 +93,8 @@ def process_file(path: str) -> str:
   try:
     with open(path, "r", encoding="utf-8") as file:
       msg = file.read()
-  except FileNotFoundError:
-    raise argparse.ArgumentError(f"File does not exist: \n\t{path}")
+  except FileNotFoundError as file_not_found:
+    raise argparse.ArgumentTypeError(f"File does not exist: \n\t{path}") from file_not_found
 
   return msg
 
@@ -87,9 +109,9 @@ def process_pattern(str_pattern: str) -> Pattern:
   """
   try:
     pattern = re.compile(str_pattern[1:-1])
-  except Exception as e:
+  except Exception as err:
     raise argparse.ArgumentTypeError(
-      f"'{str_pattern}' is not a valid regex pattern\n {e}"
+      f"'{str_pattern}' is not a valid regex pattern\n {err}"
     )
 
   return pattern
@@ -99,22 +121,26 @@ def message_not_empty(message: str) -> Result:
   """Verify the commit message is not empty
   """
   def check():
+    logger.debug("Current Message: {message}", message=message)
+
     if len(message.strip()) == 0:
-      return Result(f"ֿError: commit message cannot be empty", FAIL)
-    
-    return Result(f"The commit message is not empty", PASS)
+      return Result("ֿError: commit message cannot be empty", FAIL)
+
+    return Result("The commit message is not empty", PASS)
   return check
 
 
-def message_pattern_match(msg: str, pattern: Pattern) -> Result:
+def message_pattern_match(message: str, pattern: Pattern) -> Result:
   """Verify the commit message matches the pattern
   """
   def check():
-    if not pattern.match(msg):
+    logger.debug("Pattern: {regex}\nMessage: {message}", regex=pattern, message=message)
+
+    if not pattern.match(message):
       # Fail the commit message
-      return Result(f"Commit Message does not match pattern\n\t{pattern}\n\t{msg}", FAIL)
-    
-    return Result(f"The commit message matches the regex", PASS)
+      return Result(f"Commit Message does not match pattern\n\t{pattern}\n\t{message}", FAIL)
+
+    return Result("The commit message matches the regex", PASS)
   return check
 
 
