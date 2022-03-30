@@ -20,11 +20,11 @@ class TestMessagePatternMatch(unittest.TestCase):
   def test_pattern_not_match(self):
     pattern = re.compile(r'[A-Z]{3,4}-[0-9]{3,6} \| [\w\s]* \| .+')
     test_str = "asefagrragadsrgasr"
-    result = commit_msg_regex_hook.message_pattern_match(test_str, pattern)()
+    result = commit_msg_regex_hook.message_pattern_match(test_str, pattern, "Testing")()
     self.assertEqual(result.is_passing(), False)
 
   def test_pattern_match(self):
     pattern = re.compile(r'[A-Z]{3,4}-[0-9]{3,6} \| [\w\s]* \| .+')
     test_str = "ABC-123 | David | Commit message!"
-    result = commit_msg_regex_hook.message_pattern_match(test_str, pattern)()
+    result = commit_msg_regex_hook.message_pattern_match(test_str, pattern, "Testing")()
     self.assertEqual(result.is_passing(), True)

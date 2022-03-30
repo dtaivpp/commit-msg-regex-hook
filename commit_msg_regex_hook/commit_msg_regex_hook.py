@@ -44,14 +44,32 @@ def main():
   Parse passed in regex and verify message matches
   """
   parser = argparse.ArgumentParser()
-  parser.add_argument("message", nargs="?", type=process_file, default=COMMIT_EDITMSG,
-                      help="File path for commit message")
-  parser.add_argument("--pattern", type=process_pattern)
   parser.add_argument(
-    '--debug',
-    action='store_true',
-    help='print debug messages to stdout'
-  )
+    "message", 
+    nargs="?", 
+    type=process_file, 
+    default=COMMIT_EDITMSG,
+    help="File path for commit message")
+
+
+  parser.add_argument(
+    "--failure_message", 
+    type=str, 
+    default="Commit Message does not match pattern", 
+    help="The message to display if the commit message doesn't match the Regex")
+
+
+  parser.add_argument(
+    "--pattern",
+    type=process_pattern,
+    help="Pattern to check the commit message against")
+
+
+  parser.add_argument(
+    "--debug",
+    action="store_true",
+    help="Flag to get debugging messages")
+
 
   args = parser.parse_args()
 
@@ -60,7 +78,7 @@ def main():
 
   checks = [
     message_not_empty(args.message),
-    message_pattern_match(args.message, args.pattern)
+    message_pattern_match(args.message, args.pattern, args.failure_message)
   ]
 
   run_checks(checks)
@@ -130,7 +148,7 @@ def message_not_empty(message: str) -> Result:
   return check
 
 
-def message_pattern_match(message: str, pattern: Pattern) -> Result:
+def message_pattern_match(message: str, pattern: Pattern, failure_message: str) -> Result:
   """Verify the commit message matches the pattern
   """
   def check():
@@ -138,7 +156,9 @@ def message_pattern_match(message: str, pattern: Pattern) -> Result:
 
     if not pattern.match(message):
       # Fail the commit message
-      return Result(f"Commit Message does not match pattern\n\t{pattern}\n\t{message}", FAIL)
+      return Result(f"""{failure_message}\n\t
+                        Pattern: {pattern}\n\t
+                        Message: {message}""", FAIL)
 
     return Result("The commit message matches the regex", PASS)
   return check
