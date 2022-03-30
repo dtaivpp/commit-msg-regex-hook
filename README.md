@@ -14,16 +14,28 @@ Finally you can add this to your .pre-commit-config.yaml:
 
 ```
 - repo: https://github.com/dtaivpp/commit-msg-regex-hook
-  rev: v0.1.0
+  rev: v0.2.0
   hooks:
-    - id: commit-msg-hook
-      args: ["--pattern='[A-Z]{3,4}-[0-9]{3,6} \\| [\\w\\s]* \\| .+'"]
+    - id: commit-msg-regex-hook
+      args: ["--pattern='[A-Z]{3,4}-[0-9]{3,6} \\| [\\w\\s]* \\| .+'",
+             "--failure_message='Commits should match the pattern: Card-ID | Name | Message'"]
       stages: [commit-msg]
 ```
 
 **note: the backslashes in regex need to be escaped need to be escaped
-**double note: if you are having issues you can run with the --debug argument as well for additional logging.  
+**double note: if you are having issues you can run with the --debug argument as well for additional logging.
 
+With this you can achieve so many things. A good example is verifing deveopers have signed the DCO before allowing a commit. 
+
+```
+- repo: https://github.com/dtaivpp/commit-msg-regex-hook
+  rev: v0.2.0
+  hooks:
+    - id: commit-msg-regex-hook
+      args: ["--pattern='Signed-off-by: .* <(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|'(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*')@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])>'",
+             "--failure_message='Ensure you are signing the DCO'"]
+      stages: [commit-msg]
+```
 
 ### Developing this project
 

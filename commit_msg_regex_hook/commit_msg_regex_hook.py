@@ -92,7 +92,7 @@ def run_checks(checks: list):
     result = check()
 
     if not result.is_passing():
-      logger.error("Check Failed:\n {failure}", failure=result.message)
+      logger.error(f"Check Failed:\n {result.message}")
       sys.exit(1)
 
     logger.debug(result.message)
@@ -139,7 +139,7 @@ def message_not_empty(message: str) -> Result:
   """Verify the commit message is not empty
   """
   def check():
-    logger.debug("Current Message: {message}", message=message)
+    logger.debug(f"Current Message: {message}")
 
     if len(message.strip()) == 0:
       return Result("ֿError: commit message cannot be empty", FAIL)
@@ -152,9 +152,9 @@ def message_pattern_match(message: str, pattern: Pattern, failure_message: str) 
   """Verify the commit message matches the pattern
   """
   def check():
-    logger.debug("Pattern: {regex}\nMessage: {message}", regex=pattern, message=message)
+    logger.debug(f"Pattern: {pattern}\nMessage: {message}")
 
-    if not pattern.match(message):
+    if not pattern.search(message):
       # Fail the commit message
       return Result(f"""{failure_message}\n\t
                         Pattern: {pattern}\n\t
