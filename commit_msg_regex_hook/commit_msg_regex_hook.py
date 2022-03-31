@@ -4,6 +4,7 @@ hook framework and checks if commit message matches
 the provided regex.
 """
 
+from distutils.log import debug
 import sys
 import argparse
 import re
@@ -29,8 +30,9 @@ FAIL=False
 class Result():
   """Class for denoting pass/fail and why for test
   """
-  def __init__(self, message, result):
+  def __init__(self, message, result, debug_data=None):
     self.message = message
+    self.debug_data = debug_data
     self.result = result
 
   def is_passing(self):
@@ -93,6 +95,7 @@ def run_checks(checks: list):
 
     if not result.is_passing():
       logger.error(f"Check Failed:\n {result.message}")
+      logger.debug(result.debug_data)
       sys.exit(1)
 
     logger.debug(result.message)
@@ -156,9 +159,9 @@ def message_pattern_match(message: str, pattern: Pattern, failure_message: str) 
 
     if not pattern.search(message):
       # Fail the commit message
-      return Result(f"""{failure_message}\n\t
-                        Pattern: {pattern}\n\t
-                        Message: {message}""", FAIL)
+      return Result(f"{failure_message}\n", 
+                    FAIL, 
+                    f"\tPattern: {pattern}\n\tMessage: {message}")
 
     return Result("The commit message matches the regex", PASS)
   return check
