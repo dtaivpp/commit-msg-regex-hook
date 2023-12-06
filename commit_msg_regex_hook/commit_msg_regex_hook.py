@@ -4,7 +4,6 @@ hook framework and checks if commit message matches
 the provided regex.
 """
 
-from distutils.log import debug
 import sys
 import argparse
 import re
