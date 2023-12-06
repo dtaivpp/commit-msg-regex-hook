@@ -55,7 +55,7 @@ Here is how you can contribute:
 And you are off to the races!
 
 Before committing I would reccomend checking your build against unittest and the linter. If it doesn't pass it wont pass! 
-- `python -m unittest test`
+- `python -m unittest test/test.py`
 - `python -m pylint commit_msg_regex_hook`
 
 Make sure if you add a check to add a test case!
